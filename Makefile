@@ -9,6 +9,6 @@ clean:
 	rm -f 9cc *.o *~ tmp*
 
 dockerit:
-	docker run --rm -it -v .:/9cc -w /9cc compilerbook
+	docker run -it --rm -v .:/9cc -w /9cc --name 9cc compilerbook /bin/bash
 
 .PHONY: test clean
