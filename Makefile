@@ -2,6 +2,12 @@ CFLAGS=-std=c11 -g -static
 
 9cc: 9cc.c
 
+sandbox: sandbox.c
+	cc -o sandbox sandbox.c
+
+runsb: sandbox
+	./sandbox
+
 test: 9cc
 	./test.sh
 
