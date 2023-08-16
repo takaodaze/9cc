@@ -5,3 +5,9 @@ call 命令
 ret 命令
 1. スタックしているアドレスを１つポップ
 2. そのアドレスにジャンプ
+
+$ docker run --rm -v .:/9cc -w /9cc compilerbook make test
+
+$ docker run --rm -it -v .:/9cc -w /9cc compilerbook
+
+foo
