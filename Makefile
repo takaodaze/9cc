@@ -7,5 +7,8 @@ test: 9cc
 
 clean:
 	rm -f 9cc *.o *~ tmp*
-	
+
+dockerit:
+	docker run --rm -it -v .:/9cc -w /9cc compilerbook
+
 .PHONY: test clean
