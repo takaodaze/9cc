@@ -12,11 +12,26 @@ int main(int argc, char** argv) {
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
-    printf("  mov rax, %ld\n", strtol(p, &p, 10));
+    printf("  mov rax, %ld\n", strtol(p, &p, 10)); // 次の整数の後ろまで、ポインタを進める
 
-    while () {
+    // ただ、これでは、任意の空白を含んだ式に対応できない
+    while (*p) {
+        if(*p == '+'){
+            p++;
+            printf("  add rax, %ld\n", strtol(p, &p, 10));
+            continue;
+        }
+
+        if(*p == '-'){
+            p++;
+            printf("  sub rax, %ld\n", strtol(p, &p, 10));
+            continue;
+        }
+
+        fprintf(stderr, "予期しない文字です: '%c'\n", *p);
+        return 1;
     }
-    printf("  ret\n");
 
+    printf("  ret\n");
     return 0;
 }
