@@ -6,6 +6,80 @@
 #include <string.h>
 
 typedef enum {
+    ND_ADD,
+    ND_SUB,
+    ND_MUL,
+    ND_DIV,
+    ND_NUM,
+} NodeKind;
+
+typedef struct Node Node;
+
+struct Node {
+    NodeKind kind;
+    Node* lhs;  // 左辺 left-hand side
+    Node* rhs;  // 右辺
+    int val;    // kind: ND_NUM の場合のみに使用
+};
+
+// 二項演算子を扱う
+Node* new_node(NodeKind kind, Node* lhs, Node* rhs) {
+    Node* node = calloc(1, sizeof(Node));
+    node->kind = kind;
+    node->lhs = lhs;
+    node->rhs = rhs;
+    return node;
+}
+
+Node* new_node_num(int val) {
+    Node* node = calloc(1, sizeof(Node));
+    node->kind = ND_NUM;
+    node->val = val;
+    return node;
+}
+
+Node* primary() {
+    // 次のトークンが"("なら、"(" expr ")"のはず
+    if (consume('(')) {
+        Node* node = expr();
+        expect(')');
+        return node;
+    }
+
+    // そうでなければ数値のはず
+    return new_node_num(expect_number());
+}
+
+Node* mul() {
+    Node* node = primary();
+
+    for (;;) {
+        if (consume('*'))
+            node = new_node(ND_MUL, node, primary());
+        else if (consume('/'))
+            node = new_node(ND_DIV, node, primary());
+        else
+            return node;
+    }
+}
+
+/**
+ * 一般的な x + y + z のような加算を考えるなら
+ * この関数が返すのは右側の + に対応付くノードのポインタだろうか
+ */
+Node* expr() {
+    Node* node = mul();
+
+    for (;;) {
+        if (consume('+'))
+            node = new_node(ND_ADD, node, mul()); // arg1:kind, arg2:さっき生成したノード, arg3:これから生成するノード
+        else if (consume('-'))
+            node = new_node(ND_SUB, node, mul());
+        else
+            return node;
+    }
+}
+typedef enum {
     TK_RESERVED,  // symbol
     TK_NUM,       // integer
     TK_EOF,       // end of input
